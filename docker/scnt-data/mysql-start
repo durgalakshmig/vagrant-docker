@@ -1,0 +1,4 @@
+#!/bin/sh
+/usr/sbin/sshd
+
+mysqld_safe --defaults-file=/etc/my.cnf

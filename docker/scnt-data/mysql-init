@@ -1,0 +1,18 @@
+#!/bin/sh
+
+/usr/bin/mysql_install_db --user=mysql --defaults-file=/etc/my.cnf
+
+/usr/bin/mysqld_safe --defaults-file=/etc/my.cnf &
+
+sleep 3
+
+mysql -u root -e " \
+  SET PASSWORD = PASSWORD('root'); \
+  UPDATE mysql.user SET password = PASSWORD('root') WHERE user = 'root'; \
+  DELETE FROM mysql.user WHERE user = ''; \
+  GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION; \
+  GRANT REPLICATION SLAVE ON *.* TO 'root'@'%' IDENTIFIED BY 'root'; \
+  GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root'; \
+  GRANT SELECT, SHOW DATABASES, SUPER, REPLICATION CLIENT, PROCESS ON *.* TO 'root'@'%' IDENTIFIED BY 'root'"
+
+/usr/bin/mysqladmin -u root -proot shutdown
